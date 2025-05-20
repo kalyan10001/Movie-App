@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT=3000 || process.env.PORT;
+const PORT=5000 || process.env.PORT;
 
 app.use("/api/auth",Authrouter);
 app.use("/api/movies",MovieRouter);
