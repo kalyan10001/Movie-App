@@ -1,5 +1,5 @@
 import Movie from "../models/movie.schema.js";
-import { sendToQueue } from "../rabbitmq/insert.db.js";
+import { sendToQueue } from "../rabbitmq/insert.rbmq.js";
 
 export const getMovies= async (req, res) => {
   const movies = await Movie.find();
