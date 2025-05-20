@@ -1,9 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
 import cors from "cors";
 import ConnectToDb from "./db/ConnectToDb.js";
 import Authrouter from "./routes/auth.routes.js";
+import MovieRouter from "./routes/movie.routes.js";
 dotenv.config();
 
 const app = express();
@@ -13,8 +13,9 @@ app.use(express.json());
 const PORT=3000 || process.env.PORT;
 
 app.use("/api/auth",Authrouter);
+app.use("/api/movies",MovieRouter);
 
-app.listen(PORT, () => {
-    ConnectToDb();
+app.listen(PORT, async() => {
+    await ConnectToDb();
     console.log(`Server running on port ${process.env.PORT}`)
 });
