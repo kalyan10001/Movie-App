@@ -1,63 +1,86 @@
-import React, { useState } from "react";
-import API from "../utils/api";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-export default function Register() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user"); 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+const Register = () => {
+  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'user' });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async e => {
+  const handleChange = (e) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     try {
-      await API.post("/auth/register", { name, email, password, role });
-      setSuccess("Registered! You can now login.");
-      setError("");
-      setName("");
-      setEmail("");
-      setPassword("");
+      const res = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || 'Registration failed');
+      }
+      alert('Registration successful, please login!');
+      navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed");
-      setSuccess("");
+      setError(err.message);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl mb-4 font-semibold">Register</h1>
-      {error && <div className="mb-3 text-red-600">{error}</div>}
-      {success && <div className="mb-3 text-green-600">{success}</div>}
+    <div className="max-w-md mx-auto p-6 bg-white rounded shadow">
+      <h1 className="text-2xl font-bold mb-4">Register</h1>
+      {error && <div className="text-red-600 mb-2">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
-          type="text" placeholder="Name" required
+          name="name"
+          type="text"
+          placeholder="Name"
+          value={form.name}
+          onChange={handleChange}
+          required
           className="w-full border px-3 py-2 rounded"
-          value={name} onChange={e => setName(e.target.value)}
         />
         <input
-          type="email" placeholder="Email" required
+          name="email"
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
           className="w-full border px-3 py-2 rounded"
-          value={email} onChange={e => setEmail(e.target.value)}
         />
         <input
-          type="password" placeholder="Password" required
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          required
           className="w-full border px-3 py-2 rounded"
-          value={password} onChange={e => setPassword(e.target.value)}
         />
         <select
+          name="role"
+          value={form.role}
+          onChange={handleChange}
           className="w-full border px-3 py-2 rounded"
-          value={role} onChange={e => setRole(e.target.value)}
         >
           <option value="user">User</option>
           <option value="admin">Admin</option>
         </select>
-        <button type="submit" className="w-full bg-green-600 text-white py-2 rounded">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
           Register
         </button>
       </form>
     </div>
   );
-}
+};
+
+export default Register;

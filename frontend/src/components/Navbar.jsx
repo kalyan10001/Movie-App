@@ -1,34 +1,39 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { isLoggedIn, getUserRole, logout } from "../utils/auth";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-export default function Navbar() {
-  const navigate = useNavigate();
-  const loggedIn = isLoggedIn();
-  const role = getUserRole();
-
+const Navbar = ({ role, handleLogout }) => {
   return (
-    <nav className="bg-gray-800 p-4 text-white flex justify-between items-center">
-      <Link to="/" className="font-bold text-xl">Movie Dashboard</Link>
+    <nav className="bg-gray-800 text-white p-4 flex justify-between items-center">
+      <div>
+        <Link to="/" className="font-bold text-xl">
+          MovieApp
+        </Link>
+      </div>
       <div className="space-x-4">
-        {loggedIn ? (
+        {role ? (
           <>
-            <Link to="/">Dashboard</Link>
-            {role === "admin" && <Link to="/add-movie">Add Movie</Link>}
-            <button
-              onClick={() => { logout(); navigate("/login"); }}
-              className="bg-red-600 px-3 py-1 rounded"
-            >
+            {role === 'admin' && (
+              <Link to="/add" className="hover:underline">
+                Add Movie
+              </Link>
+            )}
+            <button onClick={handleLogout} className="hover:underline">
               Logout
             </button>
           </>
         ) : (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
+            <Link to="/login" className="hover:underline">
+              Login
+            </Link>
+            <Link to="/register" className="hover:underline">
+              Register
+            </Link>
           </>
         )}
       </div>
     </nav>
   );
-}
+};
+
+export default Navbar;
